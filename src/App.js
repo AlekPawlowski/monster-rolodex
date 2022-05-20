@@ -1,4 +1,4 @@
-import { Component  } from 'react';
+import { Component } from 'react';
 
 import logo from './logo.svg';
 import './App.css';
@@ -7,33 +7,38 @@ class App extends Component {
     constructor() {
         super();
         this.state = {
-            name: {
-                firstName: 'jhon',
-                lastName: 'Doe'
-            },
-            company: 'ZTm'
+            monsters: []
         }
     }
+
+    componentWillMount() {
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then(response=> response.json())
+            .then(users =>{
+                this.setState(()=>{
+                    return {monsters: users}
+                },
+                ()=>{
+                    console.log(this.state);
+                })
+            })
+    }
+
     render() {
         return (
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
                     <p>
-                        Hi {this.state.name.firstName} {this.state.name.lastName}, i work at {this.state.company}
+                        Hi
                     </p>
-                    <button onClick={()=>{
-                        this.setState(()=>{
-                            return {
-                                name: {
-                                    firstName: "Edward",
-                                    lastName: 'kanpka'
-                                }
-                            }
-                        }, ()=>{
-                            console.log(this.state)
+                    { 
+                        this.state.monsters.map((monster, i) => {
+                            return <div id={i} key={i}>
+                                <h1>{monster.name}</h1>
+                            </div>
                         })
-                    }}>Change Name</button>
+                    }
                 </header>
             </div>
         );
