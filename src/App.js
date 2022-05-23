@@ -1,17 +1,19 @@
 import { Component } from 'react';
 
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
     constructor() {
         super();
         this.state = {
-            monsters: []
-        }
+            monsters: [],
+            searchField: ''
+        }   
+        console.log('constructor');
     }
 
-    componentWillMount() {
+    componentDidMount() {
+        console.log('componentdidmount');
         fetch('https://jsonplaceholder.typicode.com/users')
             .then(response=> response.json())
             .then(users =>{
@@ -25,21 +27,25 @@ class App extends Component {
     }
 
     render() {
+        const filterdMonsters = this.state.monsters.filter((monster)=>{
+            if(monster.name.toLowerCase().includes(this.state.searchField)){
+                return monster;
+            }
+        })
         return (
             <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <p>
-                        Hi
-                    </p>
-                    { 
-                        this.state.monsters.map((monster, i) => {
-                            return <div id={i} key={i}>
-                                <h1>{monster.name}</h1>
-                            </div>
-                        })
-                    }
-                </header>
+                <input className="search-box" type="search" placeholder="Search monsters" onChange={(event)=>{
+                    const searchField = event.target.value.toLowerCase();
+                    this.setState(() => {return { searchField }});
+                }}/>
+                { 
+                    
+                    filterdMonsters.map((monster, i) => {
+                        return <div id={i} key={i}>
+                            <h1>{monster.name}</h1>
+                        </div>
+                    })
+                }
             </div>
         );
     }
